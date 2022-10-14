@@ -12,12 +12,14 @@ app.whenReady().then(() => {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
   let mainWindow = null
+  let splashWindow = null
 
   // Create main window
   const createMainWindow = () => {
     mainWindow = new BrowserWindow({
       width: Math.floor(width * 0.8),
       height: Math.floor(height * 0.8),
+      show: false,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: true,
@@ -29,16 +31,36 @@ app.whenReady().then(() => {
     if (isDev) {
       mainWindow.webContents.openDevTools()
     }
-    // if (!isDev) {
-    autoUpdater.checkForUpdates()
-    // }
+    if (!isDev) {
+      autoUpdater.checkForUpdates()
+    }
+
     // Load main.html
     mainWindow.loadFile('app/index.html')
   }
 
-  createMainWindow()
-
   // create a splash screen
+  const createSplashWindow = () => {
+    splashWindow = new BrowserWindow({
+      width: 500,
+      height: 300,
+      transparent: true,
+      frame: false,
+      alwaysOnTop: true,
+    })
+
+    // Load main.html
+    splashWindow.loadFile('app/splash.html')
+  }
+
+  createMainWindow()
+  createSplashWindow()
+
+  // show splash then main window
+  setTimeout(() => {
+    splashWindow.close()
+    mainWindow.show()
+  }, 5000)
 
   //Menu for macos
   const menuTemplate = [

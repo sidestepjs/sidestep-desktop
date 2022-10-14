@@ -7,7 +7,8 @@
   "license": "MIT",
   "description": "Sidestep electron proof of concept",
   "scripts": {
-    "dev": "electron .",
+    "dev": "npx electromon .",
+    "start": "electron .",
     "release": "electron-builder --publish always"
   },
   "dependencies": {
