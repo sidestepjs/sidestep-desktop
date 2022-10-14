@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Menu, screen } = require('electron')
+const { app, dialog, screen, BrowserWindow, Menu } = require('electron')
+const { autoUpdater } = require('electron-updater')
 const path = require('path')
 
 process.env.NODE_ENV = 'production'
@@ -28,12 +29,16 @@ app.whenReady().then(() => {
     if (isDev) {
       mainWindow.webContents.openDevTools()
     }
-
+    // if (!isDev) {
+    autoUpdater.checkForUpdates()
+    // }
     // Load main.html
     mainWindow.loadFile('app/index.html')
   }
 
   createMainWindow()
+
+  // create a splash screen
 
   //Menu for macos
   const menuTemplate = [
@@ -84,4 +89,36 @@ app.on('window-all-closed', () => {
   if (!isMac) {
     app.quit()
   }
+})
+
+// auto updater events
+autoUpdater.on('update-downloaded', (_event, releaseNotes, releaseName) => {
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['Restart', 'Later'],
+    title: 'Application Update',
+    message: process.platform === 'win32' ? releaseNotes : releaseName,
+    detail:
+      'A new version has being downloaded. Restart application to apply changes.',
+  }
+
+  dialog.showMessageBox(dialogOpts).then(({ response }) => {
+    if (response === 0) {
+      setImmediate(() => {
+        autoUpdater.quitAndInstall()
+      })
+    }
+  })
+})
+
+autoUpdater.on('update-available', (_event, releaseNotes, releaseName) => {
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['Ok'],
+    title: 'Application Update',
+    message: process.platform === 'win32' ? releaseNotes : releaseName,
+    detail: 'A new version is being downloaded.',
+  }
+
+  dialog.showMessageBox(dialogOpts).then(({ response }) => {})
 })

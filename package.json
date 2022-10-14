@@ -1,18 +1,31 @@
 {
   "name": "sidestep-electron",
   "productName": "SideStep",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "main.js",
   "type": "commonjs",
   "license": "MIT",
   "description": "Sidestep electron proof of concept",
   "scripts": {
-    "start": "electron .",
+    "dev": "electron .",
     "release": "electron-builder --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "^5.3.0"
+  },
+  "devDependencies": {
+    "electron": "^21.1.1",
+    "electron-builder": "^23.6.0"
   },
   "build": {
     "appId": "SideStep",
-    "d": {}
+    "win": {
+      "publish": "github"
+    },
+    "directories": {
+      "output": "release",
+      "buildResources": "build-assets"
+    }
   },
   "repository": {
     "type": "git",
@@ -25,11 +38,5 @@
   "bugs": {
     "url": "https://github.com/sidestepjs/sidestep-desktop/issues"
   },
-  "homepage": "https://github.com/sidestepjs/sidestep-desktop#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "electron": "^21.1.1",
-    "electron-builder": "^23.6.0",
-    "electron-updater": "^5.3.0"
-  }
+  "homepage": "https://github.com/sidestepjs/sidestep-desktop#readme"
 }
