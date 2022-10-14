@@ -144,3 +144,24 @@ autoUpdater.on('update-available', (_event, releaseNotes, releaseName) => {
 
   dialog.showMessageBox(dialogOpts).then(({ response }) => {})
 })
+
+/**
+ 
+  TODO: UPDATE PROGRESS - will be done when we add IPC
+
+  const log = require('electron-log');
+  const { autoUpdater } = require("electron-updater");
+  autoUpdater.logger = log;
+  log.info('App starting...');    
+  autoUpdater.on('download-progress', (progressObj) => {
+      let log_message = "Download speed: " + progressObj.bytesPerSecond;
+      log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+      log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+      sendStatusToWindow(log_message);
+  })
+
+  function sendStatusToWindow(text) {
+      log.info(text);
+      homePageWindow.webContents.send('message', text);
+  }
+ */
