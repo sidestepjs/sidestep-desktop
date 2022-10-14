@@ -15,6 +15,7 @@
 # production
 /dist
 /release
+/logs
 
 # misc
 .DS_Store

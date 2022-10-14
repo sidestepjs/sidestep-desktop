@@ -334,7 +334,7 @@
           </div>
 
           <input type="radio" id="2" name="tabgroup" />
-          <label for="2">SP</label>
+          <label for="2" class="sp">SP</label>
           <div class="tab">
             <div class="content">
               <div class="table-dictionary" data-table="audit_data">
@@ -402,6 +402,7 @@ END                  </code>
     </div>
 
     <script src="./js/highlight.min.js"></script>
+    
     <script>
       document.addEventListener('DOMContentLoaded', (event) => {
         document.querySelectorAll('pre code').forEach((el) => {
@@ -410,7 +411,34 @@ END                  </code>
       })
     </script>
     <script>
-      console.log({ node: versions.node() })
+      const { ipcRenderer } = require('electron')
+
+      console.log({ ipcRenderer });
+      
+      ipcRenderer.on('api-port', function (event, port) {
+        console.log('api-port: ', port);
+        localStorage.setItem('port', port)
+      });
+
+      const nav = document.querySelector('.nav')
+      const sp = document.querySelector('.sp')
+
+      nav.addEventListener('click', function(){
+        console.log("port is " + localStorage.getItem('port'));
+      })
+      sp.addEventListener('click', function(){
+        const port =  localStorage.getItem('port')
+
+        if(port){
+          fetch(`http://localhost:${port}`)
+          .then(function (response) {
+            return response.json()
+          })
+          .then(function (response) {
+          alert(JSON.stringify(response,null,2))
+          })
+        }
+      })
     </script>
   </body>
 </html>

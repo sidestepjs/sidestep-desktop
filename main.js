@@ -1,11 +1,29 @@
-const { app, dialog, screen, BrowserWindow, Menu } = require('electron')
+const {
+  app,
+  dialog,
+  screen,
+  BrowserWindow,
+  Menu,
+  ipcMain,
+} = require('electron')
 const { autoUpdater } = require('electron-updater')
 const path = require('path')
-
-process.env.NODE_ENV = 'production'
+const { fork } = require('child_process')
+// Setup file logging
+const log = require('electron-log')
+log.transports.file.level = 'info'
+log.transports.file.resolvePath = () => '/Users/jmburu/Desktop/log.log'
 
 const isMac = process.platform === 'darwin'
 const isDev = process.env.NODE_ENV !== 'production'
+
+/**
+ * ----------------------------
+ *  START AN EXPRESS WEB SERVER
+ * ----------------------------
+ * in a different process
+ */
+const { app: server } = require('./server')
 
 // app is ready
 app.whenReady().then(() => {
@@ -22,14 +40,14 @@ app.whenReady().then(() => {
       show: false,
       webPreferences: {
         nodeIntegration: true,
-        contextIsolation: true,
-        preload: path.join(__dirname, 'preload.js'),
+        contextIsolation: false,
+        // preload: path.join(__dirname, 'preload.js'),
       },
     })
 
     // Open devtools if in development
     if (isDev) {
-      mainWindow.webContents.openDevTools()
+      // mainWindow.webContents.openDevTools()
     }
     if (!isDev) {
       autoUpdater.checkForUpdates()
@@ -60,7 +78,7 @@ app.whenReady().then(() => {
   setTimeout(() => {
     splashWindow.close()
     mainWindow.show()
-  }, 5000)
+  }, 2000)
 
   //Menu for macos
   const menuTemplate = [
@@ -88,6 +106,13 @@ app.whenReady().then(() => {
           },
           accelerator: 'CmdOrCtrl+W',
         },
+        {
+          label: 'DevTools',
+          click: () => {
+            mainWindow.webContents.openDevTools()
+          },
+          accelerator: 'CmdOrCtrl+D',
+        },
       ],
 
       role: 'fileMenu',
@@ -103,6 +128,20 @@ app.whenReady().then(() => {
   // Handle `activate` event that serves only in the macOS environment
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
+  })
+
+  /**
+   * --------------------------------------
+   *  SEND WEB SERVER PORT TO HTML WIN
+   * --------------------------------------
+   */
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    const serverInstance = server.listen(0, function () {
+      const port = serverInstance.address().port
+      console.log(`listener at http://localhost:${port}`)
+      mainWindow.webContents.send('api-port', port)
+    })
   })
 })
 
