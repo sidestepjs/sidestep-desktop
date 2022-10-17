@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+    />
+    <title>Data Dictionary</title>
+
+    <link rel="stylesheet" href="./css/default.min.css" />
+    <link rel="stylesheet" href="./css/atom-one-dark.css" />
+  </head>
+  <body>
+    <style>
+      body,
+      html {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        font-family: 'Source Code Pro', 'Montserrat', -apple-system,
+          BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+          'Open Sans', 'Helvetica Neue', sans-serif;
+        color: rgb(255 255 255 / 51%);
+        font-size: 0.95em;
+
+        background: #192039;
+        /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+					Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+					"Helvetica Neue", sans-serif; */
+        color: #b9c0d3af;
+      }
+
+      * {
+        box-sizing: border-box;
+        transition: all 300ms ease;
+      }
+
+      .container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .container > nav {
+        width: 16%;
+        height: 100%;
+        background-color: blueviolet;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        color: white;
+        padding: 3em 2em;
+      }
+      .container > nav > ul {
+        padding: 0;
+        margin: 0;
+        margin-left: 1em;
+      }
+      .container > nav > a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        margin-bottom: 1em;
+      }
+      .container > nav > ul li {
+        list-style-type: none;
+        padding-left: 1em;
+        border-left: 2px solid rgba(255, 255, 255, 0.3);
+        height: 2em;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .container > nav > ul li:hover {
+        padding-left: 1.4em;
+      }
+      .container > nav > ul li:active {
+        opacity: 0;
+      }
+
+      .container > main {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-content: flex-start;
+        justify-content: flex-start;
+        padding: 2em 0em 7em 8em;
+        /* background: #092036; */
+      }
+      .container > main > h1 {
+        margin: 0;
+        letter-spacing: -1px;
+      }
+      .container > main > h5 {
+        font-weight: lighter;
+        color: rgb(255 255 255 / 50%);
+        margin: 1em 0 4em;
+      }
+
+      .table-dictionary {
+        margin-bottom: 5em;
+      }
+
+      .content {
+        height: 67vh;
+        overflow: scroll;
+      }
+
+      .hljs {
+        color: #abb2bf;
+        background: #141a2e;
+        border-radius: 5px;
+        padding: 2em !important;
+        font-family: 'Source Code Pro';
+        font-size: 0.875em;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 5px;
+      }
+      table > thead > tr > th,
+      table > tbody > tr > td {
+        text-align: left;
+        padding: 1em;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        color: blueviolet;
+        font-size: 0.875em;
+      }
+      table > tbody > tr > td {
+        border: none;
+        color: inherit;
+      }
+      table > tbody > tr:nth-child(even) {
+        background-color: rgb(138 43 226 / 5%);
+      }
+
+      .table-dictionary > h4 {
+        margin-bottom: 3em;
+      }
+      .table-dictionary > table {
+        background: #1e2541;
+        padding: 1em;
+        border-radius: 5px;
+      }
+
+      .css-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 80%;
+        padding: 25px;
+      }
+      .css-tabs input[type='radio'] {
+        display: none;
+      }
+      .css-tabs label {
+        padding: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* flex: 1; */
+        transition: all 500ms ease;
+      }
+      .css-tabs .tab {
+        width: 100%;
+        padding: 20px;
+        /* background: #1e2541; */
+        order: 1;
+        opacity: 0;
+        display: none;
+        transition: all 300ms ease;
+      }
+      .css-tabs .tab h2 {
+        /* font-size: 3em; */
+      }
+      .css-tabs input[type='radio']:checked + label + .tab {
+        display: block;
+        opacity: 1;
+      }
+      .css-tabs input[type='radio'] + label {
+        position: relative;
+        transition: all 200ms linear;
+      }
+      .css-tabs input[type='radio'] + label::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        left: 0;
+        bottom: 0;
+        background: #2aade2;
+        transition: all 300ms ease;
+        transform: scale(0, 1);
+      }
+      .css-tabs input[type='radio']:checked + label::after {
+        transform: scale(1, 1);
+      }
+    </style>
+    <div class="container">
+      <nav class="nav">
+        <a>Tables</a>
+        <ul>
+          <li>Table A</li>
+          <li>Table B</li>
+        </ul>
+      </nav>
+      <main>
+        <h1>Database Dictionary</h1>
+        <b>Inventory Database / Tables <b>[updated]</b></h5>
+
+        <div class="css-tabs">
+          <input type="radio" id="1" name="tabgroup" checked="checked" />
+          <label for="1">Tables</label>
+          <div class="tab">
+            <div class="content">
+              <div class="table-dictionary" data-table="audit_data">
+                <h4><b>1. `audit_data` table</b></h4>
+                <table>
+                  <thead>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Length</th>
+                    <th>Nullable</th>
+                    <th>Description</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>id</td>
+                      <td>int</td>
+                      <td>null</td>
+                      <td>NO</td>
+                      <td contenteditable="true">NO</td>
+                    </tr>
+
+                    <tr>
+                      <td>entry_id</td>
+                      <td>int</td>
+                      <td>null</td>
+                      <td>NO</td>
+                      <td>NO</td>
+                    </tr>
+
+                    <tr>
+                      <td>type</td>
+                      <td>nvarchar</td>
+                      <td>255</td>
+                      <td>NO</td>
+                      <td>NO</td>
+                    </tr>
+
+                    <tr>
+                      <td>data</td>
+                      <td>varbinary</td>
+                      <td>-1</td>
+                      <td>YES</td>
+                      <td>YES</td>
+                    </tr>
+
+                    <tr>
+                      <td>created</td>
+                      <td>datetime</td>
+                      <td>null</td>
+                      <td>YES</td>
+                      <td>YES</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-dictionary" data-table="audit_data">
+                <h4><b>`audit_data` table</b></h4>
+                <table>
+                  <thead>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Length</th>
+                    <th>Nullable</th>
+                    <th>Description</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>id</td>
+                      <td>int</td>
+                      <td>null</td>
+                      <td>NO</td>
+                      <td>NO</td>
+                    </tr>
+
+                    <tr>
+                      <td>entry_id</td>
+                      <td>int</td>
+                      <td>null</td>
+                      <td>NO</td>
+                      <td>NO</td>
+                    </tr>
+
+                    <tr>
+                      <td>type</td>
+                      <td>nvarchar</td>
+                      <td>255</td>
+                      <td>NO</td>
+                      <td>NO</td>
+                    </tr>
+
+                    <tr>
+                      <td>data</td>
+                      <td>varbinary</td>
+                      <td>-1</td>
+                      <td>YES</td>
+                      <td>YES</td>
+                    </tr>
+
+                    <tr>
+                      <td>created</td>
+                      <td>datetime</td>
+                      <td>null</td>
+                      <td>YES</td>
+                      <td>YES</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <input type="radio" id="2" name="tabgroup" />
+          <label for="2" class="sp">SP</label>
+          <div class="tab">
+            <div class="content">
+              <div class="table-dictionary" data-table="audit_data">
+                <h4><b>1. a_poll_sms.sql</b></h4>
+
+                <pre>
+                  <code class="language-sql" contenteditable="true">
+CREATE PROCEDURE [dbo].[A_SP_FETCH_STOCK_MOVEMENT_SUMMARY] (
+  @companyCode nvarchar(50)
+)
+AS
+BEGIN
+  SET NOCOUNT ON;
+  declare @refund int, @wastage int, @writeoff int, @returnstock int;
+
+  set @refund      = ( select sum (quantity) from tbCustomerRefund where companyCode = @companyCode )
+  set @wastage     = ( select sum (quantity) from tbWastage where companyCode = @companyCode)
+  set @writeoff    = ( select sum (quantity) from tbWriteOff where companyCode = @companyCode)
+  set @returnstock = ( select sum (quantity) as returnstock from tbReturnStock where companyCode = @companyCode )
+
+  select @refund as refund, @wastage as wastage, @writeoff as writeoff, @returnstock as returnstock
+END                  </code>
+                </pre>
+
+                <table>
+                  <thead>
+                    <th>Param Name</th>
+                    <th>Param Type</th>
+                    <th>Description</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>@refund</td>
+                      <td>int</td>
+                      <td contenteditable="true">NO</td>
+                    </tr>
+                    <tr>
+                      <td>@wastage</td>
+                      <td>int</td>
+                      <td contenteditable="true">NO</td>
+                    </tr>
+                    <tr>
+                      <td>@writeoff</td>
+                      <td>int</td>
+                      <td contenteditable="true">NO</td>
+                    </tr>
+                    <tr>
+                      <td>@returnstock</td>
+                      <td>int</td>
+                      <td contenteditable="true">NO</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <input type="radio" id="3" name="tabgroup" />
+          <label for="3">Functions</label>
+          <div class="tab">
+            <h2>Functions</h2>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="./js/highlight.min.js"></script>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+        document.querySelectorAll('pre code').forEach((el) => {
+          hljs.highlightElement(el)
+        })
+      })
+    </script>
+    <script>
+      const { ipcRenderer } = require('electron')
+
+      console.log({ ipcRenderer });
+      
+      ipcRenderer.on('api-port', function (event, port) {
+        console.log('api-port: ', port);
+        localStorage.setItem('port', port)
+      });
+
+      const nav = document.querySelector('.nav')
+      const sp = document.querySelector('.sp')
+
+      nav.addEventListener('click', function(){
+        console.log("port is " + localStorage.getItem('port'));
+      })
+      sp.addEventListener('click', function(){
+        const port =  localStorage.getItem('port')
+
+        if(port){
+          fetch(`http://localhost:${port}`)
+          .then(function (response) {
+            return response.json()
+          })
+          .then(function (response) {
+          alert(JSON.stringify(response,null,2))
+          })
+        }
+      })
+    </script>
+  </body>
+</html>

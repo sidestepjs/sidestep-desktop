@@ -1,21 +1,18 @@
-const {
-  app,
-  dialog,
-  screen,
-  BrowserWindow,
-  Menu,
-  ipcMain,
-} = require('electron')
+const { app, dialog, screen, BrowserWindow, Menu } = require('electron')
 const { autoUpdater } = require('electron-updater')
-const path = require('path')
-const { fork } = require('child_process')
+const { localStorage, sessionStorage } = require('electron-browser-storage')
+const os = require('os')
+
 // Setup file logging
 const log = require('electron-log')
 log.transports.file.level = 'info'
 log.transports.file.resolvePath = () => '/Users/jmburu/Desktop/log.log'
 
 const isMac = process.platform === 'darwin'
-const isDev = process.env.NODE_ENV !== 'production'
+const isDev = !app.isPackaged
+const countryCode = app.getLocaleCountryCode()
+
+console.log({ platform: os.platform(), countryCode })
 
 /**
  * ----------------------------
@@ -26,7 +23,20 @@ const isDev = process.env.NODE_ENV !== 'production'
 const { app: server } = require('./server')
 
 // app is ready
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  // Async/await
+
+  // await localStorage.getItem('favorite_number'); // '12'
+  // await localStorage.key(0); // 'favorite_number'
+  // await localStorage.length(); // 1
+  // await localStorage.removeItem('favorite_number');
+  // await localStorage.clear();
+
+  // Promises
+  await sessionStorage.setItem('favorite_color', 'blue')
+  // .then(() => sessionStorage.getItem('favorite_color')) //
+
+  // Dynamic screen dimensions
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
   let mainWindow = null
@@ -137,9 +147,16 @@ app.whenReady().then(() => {
    */
 
   mainWindow.webContents.on('did-finish-load', () => {
-    const serverInstance = server.listen(0, function () {
+    const serverInstance = server.listen(0, async function () {
       const port = serverInstance.address().port
       console.log(`listener at http://localhost:${port}`)
+      await localStorage.setItem('API_PORT', port)
+      mainWindow.webContents.executeJavaScript(
+        `window.localStorage.setItem('API_PORT_SET', '${port}');`
+      )
+      mainWindow.webContents.executeJavaScript(
+        `window.sessionStorage.setItem('API_PORT_SET', '${port}');`
+      )
       mainWindow.webContents.send('api-port', port)
     })
   })
