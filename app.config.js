@@ -9,15 +9,21 @@ export const config = {
   windows: [
     {
       name: 'main',
-      file: 'app/index.html',
       ipcRendererConf: [],
-      forkedProcesses: [],
+      scripts: [
+        {
+          path: 'server/index.js',
+          runIn: 'main_process',
+        },
+        {
+          path: 'server/forked.js',
+          runIn: 'child_process',
+        },
+      ],
     },
     {
       name: 'splash',
-      file: 'app/splash.html',
       ipcRendererConf: [],
-      forkedProcesses: [],
     },
   ],
 }
