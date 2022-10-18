@@ -46,7 +46,7 @@ try {
   console.log({ error })
 }
 
-const { app: server } = require('./server')
+const { app: server } = require('../server')
 
 // app is ready
 app.whenReady().then(async () => {
