@@ -20,6 +20,32 @@ console.log({ platform: os.platform(), countryCode })
  * ----------------------------
  * in a different process
  */
+const { fork } = require('child_process')
+const path = require('path')
+
+let forkedServer = nil
+
+try {
+  forkedServer = fork(path.resolve('./forked-server.js'), [], {
+    stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+  })
+
+  forkedServer.on('exit', function (code, signal) {
+    log.info('child process exited with ' + `code ${code} and signal ${signal}`)
+  })
+  forkedServer.on('error', function (code, signal) {
+    log.info(
+      'child process errored with ' + `code ${code} and signal ${signal}`
+    )
+  })
+
+  forkedServer.on('message', (message) => {
+    console.log({ message })
+  })
+} catch (error) {
+  console.log({ error })
+}
+
 const { app: server } = require('./server')
 
 // app is ready

@@ -31,7 +31,13 @@
     "directories": {
       "output": "release",
       "buildResources": "build-assets"
-    }
+    },
+    "extraResources": [
+      {
+        "from": "../@cloud/common",
+        "to": "common"
+      }
+    ]
   },
   "repository": {
     "type": "git",
